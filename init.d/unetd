@@ -1,0 +1,25 @@
+#!/sbin/runscript
+# Copyright 1999-2011 Gentoo Foundation
+# Distributed under the terms of the GNU General Public License v2
+# $Header: $
+
+start() {
+	cat /etc/unetd.conf | while read line;
+	do
+		sock=$(echo "$line" | cut -d':' -f 1)
+		cmd=$(echo "$line" | cut -d':' -f 3-)
+		pid=$(echo "$line" | cut -d':' -f 2)
+		[ -z "$pid" -o -z "$sock" -o -z "$cmd" ] && continue
+		start-stop-daemon -S -x unetd --pidfile "$pid" -vmb -k 0 -- "$sock" $cmd
+	done
+}
+
+stop() {
+	cat /etc/unetd.conf | while read line;
+	do
+		pid=$(echo "$line" | cut -d':' -f 2)
+		[ -z "$pid" ] && continue
+		start-stop-daemon -K -x unetd --pidfile "$pid" -v
+	done
+}
+
