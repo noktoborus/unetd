@@ -98,7 +98,7 @@ main (int argc, char *argv[])
 		/* prepare data for bind */
 		memset (&addr, 0, sizeof(addr));
 		addr.sun_family = AF_UNIX;
-		memcpy (addr.sun_path, argv[1], sizeof (addr.sun_path) - 1);
+		strncpy (addr.sun_path, argv[1], sizeof (addr.sun_path) - 1);
 		/* bind socket */
 		errn_ = bind (sock, (struct sockaddr*)&addr, sizeof (addr));
 		if (errn_ == -1)
